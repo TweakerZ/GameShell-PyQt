@@ -48,4 +48,5 @@ GameShell/
 
 # Backup directories
 backup_1/
-backup_2/
+backup_2/dist/
+build/
