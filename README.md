@@ -14,9 +14,8 @@ A modern game launcher built with PyQt6 for Linux.
   - PCSX2
   - Eden Emulator
   - Other Linux desktop launchers
-- **Proton/Wine Support**: Run Windows games using Proton or custom Wine installations
-- **Game Management**: Organize games with search, favorites, and custom categories
-- **Now Playing**: See currently running games in the status bar
+- **Game Management**: Organize games with recently added, recently played and favorites categories
+- **Now Playing**: See currently running games in the home page & now playing dialog
 
 ## Dependencies
 
@@ -43,7 +42,7 @@ A modern game launcher built with PyQt6 for Linux.
   sudo apt install mangohud
   ```
 - **gamescope** - Steam's gaming compositor (for launch options)
-- **lsfg-vk** - lossless scaling frame gen for linux by Pancake
+- **lsfgvk** - lossless scaling frame gen for linux by Pancake
 
 ## Installation
 
@@ -83,8 +82,8 @@ The executable will be created in `dist/gameshell`.
 
 - **MangoHud**: Enable performance overlay
 - **Wine FSR**: Enable Wine FSR upscaling
-- **Gamescope**: Run in gaming compositor
 - **LSFG-VK**: For frame generation
+- **Gamescope**: Run in gaming compositor
 
 ### Data Storage
 
