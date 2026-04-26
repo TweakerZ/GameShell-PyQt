@@ -175,7 +175,6 @@ class GameDialog(QDialog):
         exec_layout.setSpacing(6)
         self.f_exec = DropLineEdit("/usr/bin/game or steam://rungameid/12345")
         self.f_exec.setText(self.game.get("exec","") if self.game else "")
-        self.f_exec.setPlaceholderText("drag & drop .desktop or AppImage")
         from PyQt6.QtWidgets import QSizePolicy
         self.f_exec.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         exec_layout.addWidget(self.f_exec, 1)
@@ -187,7 +186,6 @@ class GameDialog(QDialog):
 
         self.f_img = DropLineEdit("/path/to/cover.png (optional)")
         self.f_img.setText(self.game.get("img","") if self.game else "")
-        self.f_img.setPlaceholderText("drag & drop image file")
         self.f_img.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         form.addWidget(field("Cover Image", self.f_img))
 

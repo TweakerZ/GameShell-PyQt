@@ -137,7 +137,6 @@ class DropDesktopCard(QFrame):
 
     def __init__(self):
         super().__init__()
-        self.gid = '__drop_desktop__'
         self.setFixedWidth(148)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)

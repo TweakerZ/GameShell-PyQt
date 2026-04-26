@@ -269,7 +269,6 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Error", str(ex))
 
     def _kill_gamescope(self):
-        self._controller_blocked = True
         dlg = QDialog(self)
         dlg.setWindowTitle("Kill Gamescope")
         dlg.setModal(True)
@@ -338,10 +337,7 @@ class MainWindow(QMainWindow):
         pl.addLayout(btn_layout)
 
         if dlg.exec() != QDialog.DialogCode.Accepted:
-            self._controller_blocked = False
             return
-
-        self._controller_blocked = False
 
         try:
             result = subprocess.run(
@@ -482,12 +478,10 @@ class MainWindow(QMainWindow):
         dlg.edit_sig.connect(self._open_edit_game)
         dlg.fav_sig.connect(self._toggle_fav)
         self._active_dialog = dlg
-        self._controller_blocked = True
         try:
             dlg.exec()
         finally:
             self._active_dialog = None
-            self._controller_blocked = False
 
     def _launch_game(self, g):
         cmd = build_cmd(g)
@@ -528,13 +522,11 @@ class MainWindow(QMainWindow):
         self._game_exited()
 
     def _open_add_game(self):
-        self._controller_blocked = True
         dlg = GameDialog(self)
         if dlg.exec() == QDialog.DialogCode.Accepted and dlg.result_game:
             self.library.append(dlg.result_game)
             self._save_library()
             self._render_all()
-        self._controller_blocked = False
 
     def _on_desktop_dropped(self, path):
         import configparser
@@ -593,10 +585,7 @@ class MainWindow(QMainWindow):
             self._render_all()
 
     def _open_edit_game(self, g):
-        was_blocked = self._controller_blocked
         dlg = GameDialog(self, g)
-        if not was_blocked:
-            self._controller_blocked = True
         result = dlg.exec()
         if result == QDialog.DialogCode.Accepted and dlg.result_game:
             idx = next((i for i,x in enumerate(self.library) if x['id']==g['id']), None)
@@ -608,8 +597,6 @@ class MainWindow(QMainWindow):
             self.library = [x for x in self.library if x['id'] != g['id']]
             self._save_library()
             self._render_all()
-        if not was_blocked:
-            self._controller_blocked = False
 
     def _toggle_fav(self, gid):
         g = next((x for x in self.library if x['id']==gid), None)
@@ -629,17 +616,14 @@ class MainWindow(QMainWindow):
         write_json(LIBRARY_FILE, self.library)
 
     def _load_settings(self):
-        s = read_json(SETTINGS_FILE, {})
-        hue = s.get('hue', 207)
-        Theme.apply(hue)
+        Theme.apply()
 
     def _save_settings(self):
-        write_json(SETTINGS_FILE, {'hue': Theme.hue})
+        pass
 
     def _on_hue_changed(self, val):
-        Theme.apply(val)
+        Theme.apply()
         self._apply_theme()
-        self._save_settings()
 
     def _apply_theme(self):
         t = Theme
