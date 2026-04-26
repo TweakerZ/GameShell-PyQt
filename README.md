@@ -68,9 +68,9 @@ The executable will be created in `dist/gameshell`.
 
 ### Adding Games
 
-1. **Drag and Drop**: Drag a `.desktop` file or AppImage onto the exec/command field in the add game page
+1. **Drag and Drop**: Drag a `.desktop` file onto the "Drop Desktop" card on the home page - it opens the edit dialog pre-filled with the game's details
 2. **Manual Add**: Click the + button and browse for executables
-3. **Import**: Import existing games from libraries from other launchers (importing their `.desktop` file)
+3. **Import**: Import existing games from libraries from other launchers (drag their `.desktop` file)
 
 ### Running Games
 
@@ -87,9 +87,9 @@ The executable will be created in `dist/gameshell`.
 
 ### Data Storage
 
-Games and settings are stored in `~./gameshell/`:
-- `~./gameshell/libraries.json` - Game library
-- `~./gamesshell/settings.json` - Application settings
+Games and settings are stored in `~/.gameshell/`:
+- `~/.gameshell/library.json` - Game library
+- `~/.gamesshell/settings.json` - Application settings
 
 ## Compatible Launchers & Emulators
 

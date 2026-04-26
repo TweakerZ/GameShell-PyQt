@@ -14,7 +14,7 @@ from .game_manager import game_mgr
 from .command_builder import build_cmd
 from .controller import SDL2ControllerThread
 from .widgets import StyledButton
-from .game_card import GameCard
+from .game_card import GameCard, DropDesktopCard
 from .dialogs import GameDialog, DetailDialog
 from .now_playing import NowPlayingDialog, NowPlayingCard
 from .views import GameGrid, TopNavBar, SettingsView, HintsBar
@@ -171,6 +171,10 @@ class MainWindow(QMainWindow):
         add_game_card.clicked_sig.connect(self._open_add_game)
         add_game_card.setFixedWidth(148)
         place(add_game_card)
+
+        drop_desktop_card = DropDesktopCard()
+        drop_desktop_card.clicked_sig.connect(self._on_desktop_dropped)
+        place(drop_desktop_card)
 
         kill_gs_card = GameCard({'id': '__kill_gs__', 'name': 'Kill Gamescope', 'emoji': '💀'})
         kill_gs_card.clicked_sig.connect(self._kill_gamescope)
@@ -519,6 +523,62 @@ class MainWindow(QMainWindow):
 
     def _open_add_game(self):
         dlg = GameDialog(self)
+        if dlg.exec() == QDialog.DialogCode.Accepted and dlg.result_game:
+            self.library.append(dlg.result_game)
+            self._save_library()
+            self._render_all()
+
+    def _on_desktop_dropped(self, path):
+        import configparser
+        cfg = configparser.ConfigParser()
+        try:
+            cfg.read(path, encoding='utf-8')
+        except:
+            return
+        
+        section = None
+        for s in cfg.sections():
+            if 'desktop' in s.lower() or cfg.has_option(s, 'exec'):
+                section = s
+                break
+        
+        if not section:
+            for s in cfg.sections():
+                if cfg.has_option(s, 'exec') and cfg.has_option(s, 'name'):
+                    section = s
+                    break
+        
+        if not section:
+            return
+        
+        name = cfg.get(section, 'name', fallback='Unknown')
+        exec_cmd = cfg.get(section, 'exec', fallback='')
+        icon = cfg.get(section, 'icon', fallback='')
+        comment = cfg.get(section, 'comment', fallback='')
+        categories = cfg.get(section, 'categories', fallback='')
+        
+        import shlex
+        import uuid
+        args = shlex.split(exec_cmd) if exec_cmd else []
+        exe = args[0] if args else ''
+        launch_opts = ' '.join(args[1:]) if len(args) > 1 else ''
+        
+        game = {
+            'id': str(uuid.uuid4())[:8],
+            'name': name,
+            'exec': exe,
+            'launchOpts': launch_opts,
+            'type': 'custom',
+            'img': icon if icon else '',
+            'fav': False,
+            'played': 0,
+            '_added': int(time.time()),
+        }
+        
+        if categories:
+            game['categories'] = categories
+        
+        dlg = GameDialog(self, game)
         if dlg.exec() == QDialog.DialogCode.Accepted and dlg.result_game:
             self.library.append(dlg.result_game)
             self._save_library()
