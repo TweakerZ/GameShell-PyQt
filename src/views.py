@@ -642,7 +642,9 @@ class SettingsView(QWidget):
                 div.setStyleSheet(f"background: {t.c(t.border)};")
                 cl.addWidget(div)
 
-        footer = QLabel("gameshell  —  Built with passion on Linux")
+        from datetime import date
+        version = date.today().strftime("%y.%m.%d")
+        footer = QLabel(f"gameshell v{version}  —  Built with passion on Linux")
         footer.setFont(QFont("Exo 2", 11))
         footer.setStyleSheet(f"color: {t.c(t.text_dim)};")
         footer.setAlignment(Qt.AlignmentFlag.AlignCenter)
