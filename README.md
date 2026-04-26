@@ -87,9 +87,9 @@ The executable will be created in `dist/gameshell`.
 
 ### Data Storage
 
-Games and settings are stored in `~./gameshell/`:
-- `~./gameshell/libraries.json` - Game library
-- `~./gamesshell/settings.json` - Application settings
+Games and settings are stored in `~/.gameshell/`:
+- `~/.gameshell/library.json` - Game library
+- `~/.gamesshell/settings.json` - Application settings
 
 ## Compatible Launchers & Emulators
 
