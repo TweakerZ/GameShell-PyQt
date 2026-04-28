@@ -116,6 +116,7 @@ class MainWindow(QMainWindow):
         l.addLayout(hdr)
         grid = GameGrid()
         grid.card_clicked.connect(self._on_card_clicked)
+        grid.card_right_clicked.connect(self._on_card_right_clicked)
         l.addWidget(grid)
         w._title = title_lbl
         w._count = count_lbl
@@ -482,12 +483,15 @@ class MainWindow(QMainWindow):
         dlg.edit_sig.connect(self._open_edit_game)
         dlg.fav_sig.connect(self._toggle_fav)
         self._active_dialog = dlg
-        self._controller_blocked = True
         try:
             dlg.exec()
         finally:
             self._active_dialog = None
-            self._controller_blocked = False
+
+    def _on_card_right_clicked(self, gid):
+        g = next((x for x in self.library if x['id'] == gid), None)
+        if g:
+            self._open_edit_game(g)
 
     def _launch_game(self, g):
         cmd = build_cmd(g)
@@ -712,7 +716,13 @@ class MainWindow(QMainWindow):
         elif btn == 'b':
             pass
         elif btn == 'x':
-            self._open_add_game()
+            if self.nav_zone == "grid":
+                g = self._get_current_grid()
+                if 0 <= g._focused_idx < len(g._cards):
+                    gid = g._cards[g._focused_idx].gid
+                    game = next((x for x in self.library if x['id'] == gid), None)
+                    if game and gid not in ('__add__', '__drop_desktop__', '__kill_gs__'):
+                        self._open_edit_game(game)
         elif btn == 'y':
             if self.nav_zone == "grid":
                 g = self._get_current_grid()

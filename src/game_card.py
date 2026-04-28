@@ -9,6 +9,7 @@ from .widgets import EMOJIS
 
 class GameCard(QFrame):
     clicked_sig = pyqtSignal(str)
+    right_clicked_sig = pyqtSignal(str)
 
     def __init__(self, game: dict):
         super().__init__()
@@ -110,6 +111,9 @@ class GameCard(QFrame):
     def mousePressEvent(self, a0):
         if a0 and a0.button() == Qt.MouseButton.LeftButton:
             self.clicked_sig.emit(self.gid)
+        elif a0 and a0.button() == Qt.MouseButton.RightButton:
+            if self.gid and not self.gid.startswith('__'):
+                self.right_clicked_sig.emit(self.gid)
 
     def keyPressEvent(self, a0):
         if a0 and a0.key() in (Qt.Key.Key_Return, Qt.Key.Key_Space):

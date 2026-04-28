@@ -517,22 +517,17 @@ class DetailDialog(QDialog):
         self.fav_btn.clicked.connect(lambda: (self.fav_sig.emit(self.game['id']), self.accept()))
         self.fav_btn.setFixedSize(130, 55)
 
-        self.edit_btn = StyledButton("✎  Edit")
-        self.edit_btn.clicked.connect(lambda: (self.edit_sig.emit(self.game), self.accept()))
-        self.edit_btn.setFixedSize(130, 55)
-
         self.close_btn = StyledButton("Close")
         self.close_btn.clicked.connect(self.reject)
         self.close_btn.setFixedSize(130, 55)
 
         acts.addWidget(self.launch_btn)
         acts.addWidget(self.fav_btn)
-        acts.addWidget(self.edit_btn)
         acts.addWidget(self.close_btn)
         bl.addLayout(acts)
         pl.addWidget(body)
 
-        self._buttons = [self.launch_btn, self.fav_btn, self.edit_btn, self.close_btn]
+        self._buttons = [self.launch_btn, self.fav_btn, self.close_btn]
         for btn in self._buttons:
             btn.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.launch_btn.setFocus()

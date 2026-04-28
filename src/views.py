@@ -13,6 +13,7 @@ from .widgets import StyledButton
 
 class GameGrid(QScrollArea):
     card_clicked = pyqtSignal(str)
+    card_right_clicked = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -67,6 +68,7 @@ class GameGrid(QScrollArea):
             next_cell()
             card = GameCard(g)
             card.clicked_sig.connect(self.card_clicked)
+            card.right_clicked_sig.connect(self.card_right_clicked)
             self._grid.addWidget(card, row, col)
             self._cards.append(card)
             col += 1
@@ -122,6 +124,13 @@ class GameGrid(QScrollArea):
         if 0 <= self._focused_idx < len(self._cards):
             self._cards[self._focused_idx].clicked_sig.emit(
                 self._cards[self._focused_idx].gid)
+
+    def right_click_focused(self):
+        card = self._focused_idx
+        if 0 <= card < len(self._cards):
+            gid = self._cards[card].gid
+            if gid and not gid.startswith('__'):
+                self.card_right_clicked.emit(gid)
 
     def get_cols(self):
         if not self._cards:
@@ -727,7 +736,7 @@ class HintsBar(QFrame):
             ("R1", Theme.accent, "Next View"),
             ("A", Theme.green, "Select"),
             ("B", Theme.red, "Back"),
-            ("X", QColor(33, 150, 243), "Add Game"),
+            ("X", QColor(33, 150, 243), "Edit Game"),
             ("Y", Theme.yellow, "Favorite"),
         ]
 
