@@ -544,8 +544,11 @@ class MainWindow(QMainWindow):
         import configparser
         cfg = configparser.ConfigParser()
         try:
-            cfg.read(path, encoding='utf-8')
-        except:
+            try:
+                cfg.read(path, encoding='utf-8')
+            except UnicodeDecodeError:
+                cfg.read(path, encoding='latin-1')
+        except Exception:
             return
         
         section = None
@@ -563,23 +566,20 @@ class MainWindow(QMainWindow):
         if not section:
             return
         
-        name = cfg.get(section, 'name', fallback='Unknown')
-        exec_cmd = cfg.get(section, 'exec', fallback='')
-        icon = cfg.get(section, 'icon', fallback='')
-        comment = cfg.get(section, 'comment', fallback='')
-        categories = cfg.get(section, 'categories', fallback='')
+        name = cfg.get(section, 'name', fallback='Unknown').strip()
+        exec_cmd = cfg.get(section, 'exec', fallback='').strip()
+        if not exec_cmd:
+            return
+        icon = cfg.get(section, 'icon', fallback='').strip()
+        comment = cfg.get(section, 'comment', fallback='').strip()
+        categories = cfg.get(section, 'categories', fallback='').strip()
         
-        import shlex
-        import uuid
-        args = shlex.split(exec_cmd) if exec_cmd else []
-        exe = args[0] if args else ''
-        launch_opts = ' '.join(args[1:]) if len(args) > 1 else ''
-        
+        from .data import uid
         game = {
-            'id': str(uuid.uuid4())[:8],
+            'id': uid(),
             'name': name,
-            'exec': exe,
-            'launchOpts': launch_opts,
+            'exec': exec_cmd,
+            'launchOpts': {},
             'type': 'custom',
             'img': icon if icon else '',
             'fav': False,
